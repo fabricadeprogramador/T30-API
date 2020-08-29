@@ -1,66 +1,36 @@
-var express = require("express");
-var router = express.Router();
-const { v4: uuidv4 } = require("uuid");
+const express = require("express");
+const Usuario = require("../models/usuario");
 
-let arr = [
-  {
-    id: uuidv4(),
-    userName: "Virmerson",
-    password: "4343",
-  },
-  {
-    id: uuidv4(),
-    userName: "A",
-    password: "343",
-  },
-  {
-    id: uuidv4(),
-    userName: "B",
-    password: "434",
-  },
-  {
-    id: uuidv4(),
-    userName: "C",
-    password: "5434",
-  },
-];
+const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.json(arr);
+  Usuario.find(function (err, arr) {
+    if (err) return res.send("Nao foi possivel buscar");
+    res.json(arr);
+  });
 });
 
 router.post("/", (req, res) => {
   //só aceita o que realmente queremos
-  let user = {
-    id: uuidv4(),
-    userName: req.body.userName,
-    password: req.body.password,
-  };
-  //let user = req.body;  // aceita tudo
-  arr.push(user);
-  res.json(arr);
+
+  const usuario = new Usuario(req.body);
+
+  usuario
+    .save()
+    .then(() => res.send("Cadastrado com sucesso"))
+    .catch(() => res.send("Erro ao cadastrar"));
 });
 
 router.delete("/:id", (req, res) => {
-  //Pega o indice do primeiro elemento que possuir o ID igual ao que está chegando por parametro
-  let indice = arr.findIndex((e) => e.id == req.params.id);
-  if (indice != -1) arr.splice(indice, 1);
-  res.json(arr);
+  Usuario.findByIdAndDelete(req.params.id)
+    .then(() => res.send("Deletado com sucesso"))
+    .catch(() => res.send("Erro ao deletar"));
 });
 
 router.put("/:id", (req, res) => {
-  //Busca o usuario dentro do array que conhecide com o id informado
-  let indice = arr.findIndex((e) => e.id == req.params.id);
-  let userAlterar = arr[indice];
-  //Alteração do Objeto
-  let user = {
-    id: userAlterar.id,
-    userName: req.body.userName ? req.body.userName : userAlterar.userName,
-    password: req.body.password ? req.body.password : userAlterar.password,
-  };
-  //Atualiza no array
-  arr[indice] = user;
-  res.json(arr);
+  Usuario.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => res.send("Alterado com sucesso"))
+    .catch(() => res.send("Erro ao alterar"));
 });
 
 module.exports = router;

@@ -4,13 +4,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start1": "nodemon server.com.express.js",
-    "start2": "nodemon server.sem.express.js"
+    "dev": "nodemon server.com.express.js",
+    "start": "node server.com.express.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^5.10.2",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

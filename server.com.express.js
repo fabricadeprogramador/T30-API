@@ -1,14 +1,12 @@
 const express = require("express"); //Common JS
 const userRouter = require("./routes/user.routes");
+const ConnectDB = require("./db/connectdb");
 
-//Middleware de Log
-var myLogger = function (req, res, next) {
-  console.log("Ação Registrada!");
-  next();
-};
+//BANCO
+ConnectDB.conectarMongo();
 
+// EXPRESS
 const app = express();
-app.use(myLogger);
 app.use(express.json()); //Adicionando um middleware para leitura Json do body do request
 
 //Carregar as rotas de usuario
